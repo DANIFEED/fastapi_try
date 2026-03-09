@@ -1,10 +1,13 @@
 import requests
 import streamlit as st
 import os 
+import urllib3
 
-# 🔧 Адрес вашего бэкенда
-API_URL = os.getenv("API_URL", "http://127.0.0.1:8000")
+# 🔥 Отключаем предупреждения о самоподписанных SSL-сертификатах
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# 🔧 Адрес вашего бэкенда (по умолчанию с https://)
+API_URL = os.getenv("API_URL", "http://213.192.2.99:8000") 
 
 st.set_page_config(page_title="Классификатор", layout="centered")
 st.title("🤖 Классификатор: Текст + Изображения")
@@ -26,7 +29,8 @@ with tab1:
                     response = requests.post(
                         f"{API_URL}/clf_text",
                         json={"text": txt},
-                        timeout=30
+                        timeout=30,
+                        verify=False  # 🔥 Разрешаем самоподписанные сертификаты
                     )
                     if response.status_code == 200:
                         res = response.json()
@@ -62,7 +66,8 @@ with tab2:
                     response = requests.post(
                         f"{API_URL}/clf_image",
                         files=files,
-                        timeout=60
+                        timeout=60,
+                        verify=False  # 🔥 Разрешаем самоподписанные сертификаты
                     )
                     
                     if response.status_code == 200:
