@@ -7,8 +7,7 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # 🔧 Адрес вашего бэкенда (по умолчанию с https://)
-API_URL = os.getenv("API_URL", "http://213.192.2.99:8000") 
-
+API_URL = os.getenv("API_URL", "http://213.192.2.99:8088")  # ← порт 8088!
 st.set_page_config(page_title="Классификатор", layout="centered")
 st.title("🤖 Классификатор: Текст + Изображения")
 
