@@ -30,7 +30,7 @@ with tab1:
                         f"{API_URL}/clf_text",
                         json={"text": txt},
                         timeout=30,
-                        verify=False  # 🔥 Разрешаем самоподписанные сертификаты
+                          # 🔥 Разрешаем самоподписанные сертификаты
                     )
                     if response.status_code == 200:
                         res = response.json()
@@ -67,7 +67,7 @@ with tab2:
                         f"{API_URL}/clf_image",
                         files=files,
                         timeout=60,
-                        verify=False  # 🔥 Разрешаем самоподписанные сертификаты
+                         # 🔥 Разрешаем самоподписанные сертификаты
                     )
                     
                     if response.status_code == 200:
