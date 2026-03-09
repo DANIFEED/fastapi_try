@@ -1,8 +1,10 @@
 import requests
 import streamlit as st
+import os 
 
 # 🔧 Адрес вашего бэкенда
-API_URL = "http://127.0.0.1:8000"
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8000")
+
 
 st.set_page_config(page_title="Классификатор", layout="centered")
 st.title("🤖 Классификатор: Текст + Изображения")

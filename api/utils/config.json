@@ -16,6 +16,7 @@
   "pad_token_id": 0,
   "position_embedding_type": "absolute",
   "use_cache": true,
-  "classifier_dropout": null,
-  "num_labels": 5
+  "num_labels": 5,
+  "id2label": {"0": "мода", "1": "технологии", "2": "финансы", "3": "крипта", "4": "спорт"},
+  "label2id": {"мода": 0, "технологии": 1, "финансы": 2, "крипта": 3, "спорт": 4}
 }

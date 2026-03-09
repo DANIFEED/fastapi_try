@@ -206,3 +206,9 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 */.DS_Store
+weights
+# Большие файлы (если не через LFS)
+.bin
+.pt
+.pth
+.safetensors
