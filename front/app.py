@@ -1,22 +1,16 @@
 import requests
 import streamlit as st
 import os 
-import urllib3
 
-# 🔥 Отключаем предупреждения о самоподписанных SSL-сертификатах
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# 🔧 Адрес вашего бэкенда на RunPod (HTTPS прокси)
+API_URL = os.getenv("API_URL", "https://lmaau3rvbv7tey-8088.proxy.runpod.net")
 
-# 🔧 Адрес вашего бэкенда (по умолчанию с https://)
-API_URL = os.getenv("API_URL", "http://213.192.2.99:8088")  # ← порт 8088!
 st.set_page_config(page_title="Классификатор", layout="centered")
 st.title("🤖 Классификатор: Текст + Изображения")
 
-# Вкладки: Текст и Изображение
 tab1, tab2 = st.tabs(['📝 Текст', '🖼️ Изображение'])
 
-# ==========================================
-# Вкладка 1: Классификация текста (RuBERT)
-# ==========================================
+# ===== Текст =====
 with tab1:
     st.subheader("Классификация текста")
     txt = st.text_area("Введите текст для классификации", height=100)
@@ -28,8 +22,8 @@ with tab1:
                     response = requests.post(
                         f"{API_URL}/clf_text",
                         json={"text": txt},
-                        timeout=30,
-                          # 🔥 Разрешаем самоподписанные сертификаты
+                        timeout=30
+                        # ✅ verify=False больше не нужен — сертификат валидный!
                     )
                     if response.status_code == 200:
                         res = response.json()
@@ -40,15 +34,13 @@ with tab1:
                     else:
                         st.error(f"❌ Ошибка API: {response.status_code}\n{response.text}")
                 except requests.exceptions.ConnectionError:
-                    st.error("❌ Не удалось подключиться к бэкенду. Запустите `python api/main.py`")
+                    st.error("❌ Не удалось подключиться к бэкенду")
                 except Exception as e:
                     st.error(f"❌ Ошибка: {e}")
         else:
             st.warning("⚠️ Введите текст")
 
-# ==========================================
-# Вкладка 2: Детекция объектов (YOLO)
-# ==========================================
+# ===== Изображение =====
 with tab2:
     st.subheader("Детекция объектов на изображении")
     image = st.file_uploader("Загрузите изображение", type=['jpg', 'jpeg', 'png', 'webp'])
@@ -57,16 +49,14 @@ with tab2:
         if image is not None:
             with st.spinner("Обрабатываю..."):
                 try:
-                    # Показываем загруженное изображение
                     st.image(image, caption="Загруженное изображение", use_container_width=True)
                     
-                    # Отправляем на бэкенд
                     files = {"file": image.getvalue()}
                     response = requests.post(
                         f"{API_URL}/clf_image",
                         files=files,
-                        timeout=60,
-                         # 🔥 Разрешаем самоподписанные сертификаты
+                        timeout=60
+                        # ✅ verify=False больше не нужен
                     )
                     
                     if response.status_code == 200:
@@ -83,14 +73,11 @@ with tab2:
                         st.error(f"❌ Ошибка API: {response.status_code}\n{response.text}")
                         
                 except requests.exceptions.ConnectionError:
-                    st.error("❌ Не удалось подключиться к бэкенду. Запустите `python api/main.py`")
+                    st.error("❌ Не удалось подключиться к бэкенду")
                 except Exception as e:
                     st.error(f"❌ Ошибка: {e}")
         else:
             st.warning("⚠️ Загрузите изображение")
 
-# ==========================================
-# Футер
-# ==========================================
 st.markdown("---")
 st.caption("Бэкенд: FastAPI + RuBERT + YOLO | Фронтенд: Streamlit")
