@@ -1,0 +1,56 @@
+                 
+--------------------------------------------------+------------+-----------------------------------------------------------------------------------------------
+linear.{0, 3}.bias                                | UNEXPECTED |                                                                                               
+linear.{0, 3}.weight                              | UNEXPECTED |                                                                                               
+encoder.layer.3.attention.output.LayerNorm.bias   | MISSING    |                                                                                               
+encoder.layer.3.attention.output.LayerNorm.weight | MISSING    |                                                                                               
+encoder.layer.3.attention.self.value.weight       | MISSING    |                                                                                               
+encoder.layer.3.output.LayerNorm.bias             | MISSING    |                                                                                               
+encoder.layer.3.output.LayerNorm.weight           | MISSING    |                                                                                               
+encoder.layer.3.output.dense.weight               | MISSING    |                                                                                               
+encoder.layer.3.attention.self.query.bias         | MISSING    |                                                                                               
+encoder.layer.3.attention.self.query.weight       | MISSING    |                                                                                               
+encoder.layer.3.output.dense.bias                 | MISSING    |                                                                                               
+encoder.layer.3.attention.self.key.weight         | MISSING    |                                                                                               
+encoder.layer.3.attention.output.dense.weight     | MISSING    |                                                                                               
+encoder.layer.3.intermediate.dense.weight         | MISSING    |                                                                                               
+encoder.layer.3.attention.output.dense.bias       | MISSING    |                                                                                               
+encoder.layer.3.intermediate.dense.bias           | MISSING    |                                                                                               
+encoder.layer.3.attention.self.key.bias           | MISSING    |                                                                                               
+encoder.layer.3.attention.self.value.bias         | MISSING    |                                                                                               
+encoder.layer.{0, 1, 2}.output.dense.weight       | MISMATCH   | Reinit due to size mismatch - ckpt: torch.Size([312, 600]) vs model:torch.Size([312, 1200])   
+encoder.layer.{0, 1, 2}.intermediate.dense.bias   | MISMATCH   | Reinit due to size mismatch - ckpt: torch.Size([600]) vs model:torch.Size([1200])             
+encoder.layer.{0, 1, 2}.intermediate.dense.weight | MISMATCH   | Reinit due to size mismatch - ckpt: torch.Size([600, 312]) vs model:torch.Size([1200, 312])   
+embeddings.word_embeddings.weight                 | MISMATCH   | Reinit due to size mismatch - ckpt: torch.Size([83828, 312]) vs model:torch.Size([30000, 312])
+embeddings.position_embeddings.weight             | MISMATCH   | Reinit due to size mismatch - ckpt: torch.Size([2048, 312]) vs model:torch.Size([512, 312])   
+
+Notes:
+- UNEXPECTED    :can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING       :those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+- MISMATCH      :ckpt weights were loaded, but they did not match the original empty weight shapes.
+ERROR:    Traceback (most recent call last):
+  File "/Users/danilabalakin/Documents/fastapi_try/api/.venv/lib/python3.12/site-packages/starlette/routing.py", line 693, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/danilabalakin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/danilabalakin/Documents/fastapi_try/api/main.py", line 60, in lifespan
+    rubert_model = load_rubert_model()
+                   ^^^^^^^^^^^^^^^^^^^
+  File "/Users/danilabalakin/Documents/fastapi_try/api/utils/model_func.py", line 24, in load_rubert_model
+    model = AutoModel.from_pretrained('api/utils')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/danilabalakin/Documents/fastapi_try/api/.venv/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py", line 374, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/danilabalakin/Documents/fastapi_try/api/.venv/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4138, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/danilabalakin/Documents/fastapi_try/api/.venv/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4299, in _finalize_model_loading
+    log_state_dict_report(
+  File "/Users/danilabalakin/Documents/fastapi_try/api/.venv/lib/python3.12/site-packages/transformers/utils/loading_report.py", line 278, in log_state_dict_report
+    raise RuntimeError(
+RuntimeError: You set `ignore_mismatched_sizes` to `False`, thus raising an error. For details look at the above report!
+
+ERROR:    Application startup failed. Exiting.
